@@ -1,7 +1,16 @@
-const city = "london";
-const country = "UK";
-const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
-const openWeatherAPI = `api.openweathermap.org/data/2.5/weather?q=${city},${country}&APPID=${apiKey}&units=metric`;
+let apiResult = {};
+function callAPI(city, countryCode){
+    //const city = "london";
+    //const country = "UK";
+    const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
+    
+    const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric`;
+    
+    fetch(apiURL)
+    .then(response => response.json())
+    .then(result => apiResult = result)
+    //.catch(err)
+}
 
 const exampleAPIResult = 
 {
@@ -40,8 +49,17 @@ const exampleAPIResult =
     "cod":200
 }
 
-$(".city-name").text(exampleAPIResult.name);
-$("#today .date").text(dayjs().format("DD/MM/YYYY"));
-$("#today .temp").text(exampleAPIResult.main.temp);
-$("#today .wind").text(exampleAPIResult.wind.speed);
-$("#today .humidity").text(exampleAPIResult.main.humidity);
+function updateWeatherInfo(){
+    $(".city-name").text(apiResult.name);
+    $("#today .date").text(dayjs().format("DD/MM/YYYY"));
+    $("#today .temp").text(apiResult.main.temp);
+    $("#today .wind").text(apiResult.wind.speed);
+    $("#today .humidity").text(apiResult.main.humidity);
+}
+
+$("#search-button").on("click", function(event){
+    event.preventDefault();
+    const searchInput = $("#search-input").text().trim().split(",");
+    callAPI(searchInput[0], searchInput[1]);
+    updateWeatherInfo();
+})
