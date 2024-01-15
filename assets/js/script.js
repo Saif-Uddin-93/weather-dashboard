@@ -1,18 +1,81 @@
-let apiResult = {};
-function callAPI(city, countryCode){
-    //const city = "london";
-    //const country = "UK";
+//let apiResult = {};
+function callFetch(apiURL, nextDay){
+    fetch(apiURL)
+    .then(response => response.json())
+    .then(result => {
+        updateWeatherInfo(day(nextDay), result);
+    })
+}
+function callAPI(city, countryCode, index){
+    let time = day(0).timestamp;
+    // const city = "london";
+    // const country = "UK";
     const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
-    
-    const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric`;
+    // https://api.openweathermap.org/data/2.5/weather?q=London,&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric
+    let apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
     
     fetch(apiURL)
     .then(response => response.json())
-    .then(result => apiResult = result)
+    .then(result => {
+        console.log(time, index);
+        console.log(apiURL)
+        updateWeatherInfo(day(index), result); // today
+        return index+1
+    })
+    .then(nextDay => {
+        time = day(nextDay).timestamp
+        apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
+        callFetch(apiURL, nextDay); // day-1
+        console.log(time, nextDay);
+        console.log(apiURL)
+        return nextDay+1;
+    })
+    .then(nextDay => {
+        time = day(nextDay).timestamp
+        apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
+        callFetch(apiURL, nextDay); // day-2
+        console.log(time, nextDay);
+        console.log(apiURL)
+        return nextDay+1;
+    })
+    .then(nextDay => {
+        time = day(nextDay).timestamp
+        apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
+        callFetch(apiURL, nextDay); // day-3
+        console.log(time, nextDay);
+        console.log(apiURL)
+        return nextDay+1;
+    })
+    .then(nextDay => {
+        time = day(nextDay).timestamp
+        apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
+        callFetch(apiURL, nextDay); // day-4
+        console.log(time, nextDay);
+        console.log(apiURL)
+        return nextDay+1;
+    })
+    .then(nextDay => {
+        time = day(nextDay).timestamp
+        apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
+        callFetch(apiURL, nextDay); // day-5
+        console.log(time, nextDay);
+        console.log(apiURL)
+        //return nextDay+1;
+    })
     //.catch(err)
 }
 
-const exampleAPIResult = 
+
+function day(index=0){
+    const oneDay = 86400 //seconds
+    const timeToday = Date.now();
+    let timestamp = timeToday + (oneDay*index);
+    let selector = index>0 ? `#day-${index}`: "#today";
+    if (index>5)return;
+    return {selector, timestamp}
+}
+
+/* const exampleAPIResult = 
 {
     "coord":{
         "lon":-0.1257,
@@ -47,19 +110,33 @@ const exampleAPIResult =
     "id":2643743,
     "name":"London",
     "cod":200
-}
+} */
 
-function updateWeatherInfo(){
-    $(".city-name").text(apiResult.name);
-    $("#today .date").text(dayjs().format("DD/MM/YYYY"));
-    $("#today .temp").text(apiResult.main.temp);
-    $("#today .wind").text(apiResult.wind.speed);
-    $("#today .humidity").text(apiResult.main.humidity);
+function updateWeatherInfo(day, result){
+    //console.log(day.timestamp);
+    let convertTime = new Date (day.timestamp);
+    //console.log(convertTime);
+    let d = convertTime.getDate()<10 ? `0${convertTime.getDate()}`:`${convertTime.getDate()}`;
+    let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
+    let y = convertTime.getFullYear().toString();
+    
+    d = dayjs.unix(day.timestamp).format('DD')
+    m = dayjs.unix(day.timestamp).format('MM')
+    y = dayjs.unix(day.timestamp).format('YYYY')
+    
+    console.log(day.timestamp, d, m, y);
+
+    $(".city-name").text(result.name);
+    $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
+    $(`${day.selector} .temp`).text(result.main.temp);
+    $(`${day.selector} .wind`).text(result.wind.speed);
+    $(`${day.selector} .humidity`).text(result.main.humidity);
 }
 
 $("#search-button").on("click", function(event){
     event.preventDefault();
-    const searchInput = $("#search-input").text().trim().split(",");
-    callAPI(searchInput[0], searchInput[1]);
-    updateWeatherInfo();
+    const searchInput = $("#search-input").val().trim().split(",");
+    //const timestamp = Date.now();
+    console.log(searchInput[0], searchInput[1]||'')
+    callAPI(searchInput[0], searchInput[1]||'', 0)
 })

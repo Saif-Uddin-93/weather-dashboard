@@ -25,7 +25,7 @@
         <form id="search-form" class="form">
           <div class="form-inline form-group">
             <div class="input-group">
-              <input class="form-input weather-search" type="text" id="search-input" aria-labelledby="form-heading" aria-controls="today forecast" />
+              <input class="form-input weather-search" type="text" id="search-input" placeholder="City, Country code" aria-labelledby="form-heading" aria-controls="today forecast" />
               <div class="input-group-append">
                 <button type="submit" class="btn search-button" id="search-button" aria-label="submit search">
                   Search
@@ -54,35 +54,35 @@
         </section>
         <section id="forecast" class="row mt-3" role="region" aria-live="polite">
           <h4>5-Day forecast:</h4>
-          <div class="col">
-            <h6>Date</h6>
-            <p>Temp: 5°C</p>
-            <p>Wind: Wind KPH</p>
-            <p>Humidity: 84%</p>
+          <div id="day-1" class="col">
+            <h6 class="date">Date</h6>
+            <p>Temp: <span class="temp"></span>°C</p>
+            <p>Wind: <span class="wind"></span>KPH</p>
+            <p>Humidity: <span class="humidity"></span>%</p>
           </div>
-          <div class="col">
-            <h6>Date</h6>
-            <p>Temp: 5°C</p>
-            <p>Wind: Wind KPH</p>
-            <p>Humidity: 84%</p>
+          <div id="day-2" class="col">
+            <h6 class="date">Date</h6>
+            <p>Temp: <span class="temp"></span>°C</p>
+            <p>Wind: <span class="wind"></span>KPH</p>
+            <p>Humidity: <span class="humidity"></span>%</p>
           </div>
-          <div class="col">
-            <h6>Date</h6>
-            <p>Temp: 5°C</p>
-            <p>Wind: Wind KPH</p>
-            <p>Humidity: 84%</p>
+          <div id="day-3" class="col">
+            <h6 class="date">Date</h6>
+            <p>Temp: <span class="temp"></span>°C</p>
+            <p>Wind: <span class="wind"></span>KPH</p>
+            <p>Humidity: <span class="humidity"></span>%</p>
           </div>
-          <div class="col">
-            <h6>Date</h6>
-            <p>Temp: 5°C</p>
-            <p>Wind: Wind KPH</p>
-            <p>Humidity: 84%</p>
+          <div id="day-4" class="col">
+            <h6 class="date">Date</h6>
+            <p>Temp: <span class="temp"></span>°C</p>
+            <p>Wind: <span class="wind"></span>KPH</p>
+            <p>Humidity: <span class="humidity"></span>%</p>
           </div>
-          <div class="col">
-            <h6>Date</h6>
-            <p>Temp: 5°C</p>
-            <p>Wind: Wind KPH</p>
-            <p>Humidity: 84%</p>
+          <div id="day-5" class="col">
+            <h6 class="date">Date</h6>
+            <p>Temp: <span class="temp"></span>°C</p>
+            <p>Wind: <span class="wind"></span>KPH</p>
+            <p>Humidity: <span class="humidity"></span>%</p>
           </div>
         </section>
       </div>
