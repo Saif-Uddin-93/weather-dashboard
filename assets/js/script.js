@@ -8,8 +8,6 @@ function callFetch(apiURL, nextDay){
 }
 function callAPI(city, countryCode, index){
     let time = day(0).timestamp;
-    // const city = "london";
-    // const country = "UK";
     const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
     // https://api.openweathermap.org/data/2.5/weather?q=London,&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric
     let apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
@@ -69,7 +67,7 @@ function callAPI(city, countryCode, index){
 function day(index=0){
     const oneDay = 86400 //seconds
     const timeToday = Date.now();
-    let timestamp = timeToday + (oneDay*index);
+    let timestamp = timeToday + (oneDay*index*1000);
     let selector = index>0 ? `#day-${index}`: "#today";
     if (index>5)return;
     return {selector, timestamp}
@@ -120,9 +118,9 @@ function updateWeatherInfo(day, result){
     let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
     let y = convertTime.getFullYear().toString();
     
-    d = dayjs.unix(day.timestamp).format('DD')
+    /* d = dayjs.unix(day.timestamp).format('DD')
     m = dayjs.unix(day.timestamp).format('MM')
-    y = dayjs.unix(day.timestamp).format('YYYY')
+    y = dayjs.unix(day.timestamp).format('YYYY') */
     
     console.log(day.timestamp, d, m, y);
 
@@ -136,7 +134,6 @@ function updateWeatherInfo(day, result){
 $("#search-button").on("click", function(event){
     event.preventDefault();
     const searchInput = $("#search-input").val().trim().split(",");
-    //const timestamp = Date.now();
     console.log(searchInput[0], searchInput[1]||'')
     callAPI(searchInput[0], searchInput[1]||'', 0)
 })
