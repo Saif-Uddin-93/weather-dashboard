@@ -129,6 +129,7 @@ function updateWeatherInfo(day, result){
     $(`${day.selector} .temp`).text(result.main.temp);
     $(`${day.selector} .wind`).text(result.wind.speed);
     $(`${day.selector} .humidity`).text(result.main.humidity);
+    saveLocal(day.selector, result);
 }
 
 $("#search-button").on("click", function(event){
@@ -142,47 +143,20 @@ function loadLocal(city){
     const result = JSON.parse(localStorage.getItem("su-weather-app"));
 }
 
-function saveLocal(city, countryCode){
+function saveLocal(date, cityObj){
     const cityInfo = {
-        cityName: city,
-        countryName: countryCode,
-        forecast : {
-            today : {
-                timestamp : "",
-                temp : "",
-                wind : "",
-                humidity : "",
-            },
-            day1 : {
-                timestamp : "",
-                temp : "",
-                wind : "",
-                humidity : "",
-            },
-            day2 : {
-                timestamp : "",
-                temp : "",
-                wind : "",
-                humidity : "",
-            },
-            day3 : {
-                timestamp : "",
-                temp : "",
-                wind : "",
-                humidity : "",
-            },
-            day4 : {
-                timestamp : "",
-                temp : "",
-                wind : "",
-                humidity : "",
-            },
-            day5 : {
-                timestamp : "",
-                temp : "",
-                wind : "",
-                humidity : "",
-            },
-        }
+        cityName: cityObj.name,
+        countryName: cityObj.sys.country,
     }
+
+    cityInfo["forecast"][date] = {
+        timestamp : cityObj.dt,
+        temp : cityObj.main.temp,
+        wind : cityObj.wind.speed,
+        humidity : cityObj.main.humidity,
+    }
+    
+    const recentSearches = JSON.parse(localStorage.getItem(`${cityObj.name},${cityObj.sys.country}`)) || {};
+    recentSearches[`${cityObj.name},${cityObj.sys.country}`]=cityInfo;
+    localStorage.setItem(`${cityObj.name},${cityObj.sys.country}`, JSON.stringify(cityInfo));
 }
