@@ -137,3 +137,52 @@ $("#search-button").on("click", function(event){
     console.log(searchInput[0], searchInput[1]||'')
     callAPI(searchInput[0], searchInput[1]||'', 0)
 })
+
+function loadLocal(city){
+    const result = JSON.parse(localStorage.getItem("su-weather-app"));
+}
+
+function saveLocal(city, countryCode){
+    const cityInfo = {
+        cityName: city,
+        countryName: countryCode,
+        forecast : {
+            today : {
+                timestamp : "",
+                temp : "",
+                wind : "",
+                humidity : "",
+            },
+            day1 : {
+                timestamp : "",
+                temp : "",
+                wind : "",
+                humidity : "",
+            },
+            day2 : {
+                timestamp : "",
+                temp : "",
+                wind : "",
+                humidity : "",
+            },
+            day3 : {
+                timestamp : "",
+                temp : "",
+                wind : "",
+                humidity : "",
+            },
+            day4 : {
+                timestamp : "",
+                temp : "",
+                wind : "",
+                humidity : "",
+            },
+            day5 : {
+                timestamp : "",
+                temp : "",
+                wind : "",
+                humidity : "",
+            },
+        }
+    }
+}
