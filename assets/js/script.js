@@ -147,9 +147,10 @@ function saveLocal(date, cityObj){
     const cityInfo = {
         cityName: cityObj.name,
         countryName: cityObj.sys.country,
+        forecast,
     }
-
-    cityInfo["forecast"][date] = {
+    
+    cityInfo.forecast[date] = {
         timestamp : cityObj.dt,
         temp : cityObj.main.temp,
         wind : cityObj.wind.speed,
