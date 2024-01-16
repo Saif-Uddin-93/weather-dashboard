@@ -124,6 +124,8 @@ function updateWeatherInfo(day, result){
     
     console.log(day.timestamp, d, m, y);
 
+    appendForecast(day);
+
     $(".city-name").text(result.name);
     $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
     $(`${day.selector} .temp`).text(result.main.temp);
@@ -137,16 +139,37 @@ $("#search-button").on("click", function(event){
     const searchInput = $("#search-input").val().trim().split(",");
     console.log(searchInput[0], searchInput[1]||'')
     callAPI(searchInput[0], searchInput[1]||'', 0)
+    appendSearch(searchInput.join());
 })
+
+function appendForecast(selector){
+    selector = selector.replace("#", "");
+    const element = $(`<div id="${selector}" class="col">
+    <h6 class="date"></h6>
+    <p>Temp: <span class="temp"></span>°C</p>
+    <p>Wind: <span class="wind"></span>KPH</p>
+    <p>Humidity: <span class="humidity"></span>%</p>
+  </div>`)
+    //$("<>")
+    $("#forecast").append(element)
+}
+
+function appendSearch(searchItem){
+    const searchedElement = $(`<li>${searchItem}</li>`)
+    $("#history").append(searchedElement);
+}
 
 function loadLocal(city){
     const result = JSON.parse(localStorage.getItem("su-weather-app"));
 }
 
 function saveLocal(date, cityObj){
+    const city = cityObj.name;
+    const country = cityObj.sys.country;
+
     const cityInfo = {
-        cityName: cityObj.name,
-        countryName: cityObj.sys.country,
+        cityName: city,
+        countryName: country,
         forecast,
     }
     
@@ -157,7 +180,7 @@ function saveLocal(date, cityObj){
         humidity : cityObj.main.humidity,
     }
     
-    const recentSearches = JSON.parse(localStorage.getItem(`${cityObj.name},${cityObj.sys.country}`)) || {};
-    recentSearches[`${cityObj.name},${cityObj.sys.country}`]=cityInfo;
-    localStorage.setItem(`${cityObj.name},${cityObj.sys.country}`, JSON.stringify(cityInfo));
+    const recentSearches = JSON.parse(localStorage.getItem(`${city},${country}`)) || {};
+    recentSearches[`${city},${country}`]=cityInfo;
+    localStorage.setItem(`${city},${country}`, JSON.stringify(cityInfo));   
 }
