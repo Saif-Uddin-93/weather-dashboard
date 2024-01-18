@@ -160,7 +160,7 @@ function addCountryToRecent(result){
 function addRecentEvent(){
     $(".search-item").on("click", function(event){
         console.log("clicked", event.target.textContent)
-        const item = event.target.textContent.replace(" ", "")
+        const item = event.target.textContent.replace(/\s+/g, "")
         console.log(item)
         //loadLocal(event.target.textContent.replace(" ", ""))
         //loadLocal(`${item[0]},${item[1]}`)
