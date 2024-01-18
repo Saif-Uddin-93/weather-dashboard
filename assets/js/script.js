@@ -27,10 +27,8 @@ function callAPI(city, countryCode){
                     wind : result.wind.speed,
                     humidity : result.main.humidity,
                 }
-                //updateWeatherInfo(day(nextDay), result); // today
                 updateWeatherInfo(day(nextDay), cityInfo); // today
                 if(nextDay===5){
-                    //addCountryToRecent(result);
                     addCountryToRecent(cityInfo);
                 }
                 return nextDay+1
@@ -105,9 +103,6 @@ function updateWeatherInfo(day, result){
 
     $(".city-name").text(result.cityName);
     $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
-    // $(`${day.selector} .temp`).text(result.main.temp);
-    // $(`${day.selector} .wind`).text(result.wind.speed);
-    // $(`${day.selector} .humidity`).text(result.main.humidity);
     $(`${day.selector} .temp`).text(result.forecast[day.selector].temp);
     $(`${day.selector} .wind`).text(result.forecast[day.selector].wind);
     $(`${day.selector} .humidity`).text(result.forecast[day.selector].humidity);
@@ -117,7 +112,7 @@ function updateWeatherInfo(day, result){
 
 $("#search-button").on("click", function(event){
     event.preventDefault();
-    const searchInput = $("#search-input").val().trim().split(',');
+    const searchInput = $("#search-input").val().replace(" ", "").split(',');
     const city = searchInput[0];
     const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
     console.log(city, country)
@@ -153,18 +148,20 @@ function addCountryToRecent(result){
     let countryCode = recentSearch.textContent.trim().split(',')[1];
     //countryCode = !countryCode ? result.sys.country.toUpperCase() : country.toUpperCase();
     countryCode = !countryCode ? result.countryName.toUpperCase() : countryCode.toUpperCase();
-    console.log(recentSearch)
+    //console.log(recentSearch)
     recentSearch.textContent=`${city}, ${countryCode}`
 }   
 
 function addRecentEvent(){
     $(".search-item").on("click", function(event){
         console.log("clicked", event.target.textContent)
-        loadLocal(event.target.textContent.replace(" ", ""))
-        console.log(event.target.textContent.replace(" ", ""))
+        const item = event.target.textContent.replace(" ", "")
+        console.log(item)
+        //loadLocal(event.target.textContent.replace(" ", ""))
+        //loadLocal(`${item[0]},${item[1]}`)
+        loadLocal(item)
     })
 }
-
 
 const days = ["#today", "#day-1", "#day-2", "#day-3", "#day-4", "#day-5"];
 
@@ -172,12 +169,10 @@ function loadLocal(city){
     const result = JSON.parse(localStorage.getItem(city));
     console.log(city, result)
     for (let i = 0; i < days.length; i++) {
-        //console.log(days[i])
         updateWeatherInfo(day(i), result)
     }
 }
 
-//function saveLocal(date, cityObj){
 function saveLocal(cityObj){
     /* const city = cityObj.name;
     const country = cityObj.sys.country;
