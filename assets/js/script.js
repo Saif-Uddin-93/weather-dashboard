@@ -23,6 +23,7 @@ function callAPI(city, countryCode){
                 
                 cityInfo.forecast[days[nextDay]] = {
                     timestamp : result.dt,
+                    //weatherIcon: result.weather[0].icon,
                     temp : result.main.temp,
                     wind : result.wind.speed,
                     humidity : result.main.humidity,
@@ -98,11 +99,15 @@ function updateWeatherInfo(day, result){
     
     //console.log(day.timestamp, d, m, y);
     console.log(day.selector, result);
+    //console.log(result.forecast.weatherIcon)
     //$("#forecast").html("")
     //appendForecast(day.selector);
+    //const weatherIcon = result.weather[0];
 
     $(".city-name").text(result.cityName);
     $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
+    //$(`${day.selector} .weather-icon`).attr("src", `http://openweathermap.org/img/w/${weatherIcon}.png`);
+    $(`${day.selector} .weather-icon`).attr("alt", `Weather icon`);
     $(`${day.selector} .temp`).text(result.forecast[day.selector].temp);
     $(`${day.selector} .wind`).text(result.forecast[day.selector].wind);
     $(`${day.selector} .humidity`).text(result.forecast[day.selector].humidity);

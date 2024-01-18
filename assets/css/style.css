@@ -1,5 +1,14 @@
 #today{
     border: black solid 1px;
+    padding: 0.5rem;
+}
+
+#forecast{
+    & .forecast{
+        margin-right: 1rem;
+        background-color: rgb(46, 65, 82);
+        color: white;
+    }
 }
 
 .input-group{
