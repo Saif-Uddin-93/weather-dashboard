@@ -1,3 +1,41 @@
 #today{
     border: black solid 1px;
 }
+
+.input-group{
+    flex-direction: column;
+    align-items: center;
+    /* right: 4rem; */
+    & .weather-search{
+        min-width: 98%;
+        height: fit-content;
+    }
+}
+
+#search-button{
+    min-width: 98%;
+    margin-top: 1rem;
+    background-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+    border: rgb(200, 200, 200) solid 1px;
+    border-radius: 5px;
+    &:hover{
+        background-color: rgb(13, 0, 255);
+    }
+}
+
+.search-item{
+    border: black solid 1px;
+    border-radius: 5px;
+    min-width: 98%;
+    text-align: center;
+    list-style: none;
+    margin-bottom: 1rem;
+    &:hover{
+        background-color: rgb(200, 222, 255);
+        border: rgb(174, 206, 254) solid 1px;
+        font-weight: bolder;
+        cursor: pointer;
+    }
+}

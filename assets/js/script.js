@@ -11,17 +11,36 @@ function callAPI(city, countryCode){
         fetch(apiURL)
             .then(response => response.json())
             .then(result => {
-                console.log(time, nextDay);
-                console.log(apiURL)
-                updateWeatherInfo(day(nextDay), result); // today
+                //console.log(time, nextDay);
+                //console.log(apiURL)
+                const city = result.name;
+                const country = result.sys.country;
+                const cityInfo = {
+                    cityName: city,
+                    countryName: country,
+                    forecast,
+                }
+                
+                cityInfo.forecast[days[nextDay]] = {
+                    timestamp : result.dt,
+                    temp : result.main.temp,
+                    wind : result.wind.speed,
+                    humidity : result.main.humidity,
+                }
+                //updateWeatherInfo(day(nextDay), result); // today
+                updateWeatherInfo(day(nextDay), cityInfo); // today
+                if(nextDay===5){
+                    //addCountryToRecent(result);
+                    addCountryToRecent(cityInfo);
+                }
                 return nextDay+1
-        })
-        .then(nextDay => {
-            if(nextDay <= 5) {
-                callFetch(nextDay);
-            }
-        })
-        .catch(error => console.error(error));
+            })
+            .then(nextDay => {
+                if(nextDay <= 5) {
+                    callFetch(nextDay);
+                }
+            })
+            .catch(error => console.error(error));
     }
 }
 
@@ -79,25 +98,31 @@ function updateWeatherInfo(day, result){
     let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
     let y = convertTime.getFullYear()
     
-    console.log(day.timestamp, d, m, y);
-    
+    //console.log(day.timestamp, d, m, y);
+    console.log(day.selector, result);
     //$("#forecast").html("")
     //appendForecast(day.selector);
 
-    $(".city-name").text(result.name);
+    $(".city-name").text(result.cityName);
     $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
-    $(`${day.selector} .temp`).text(result.main.temp);
-    $(`${day.selector} .wind`).text(result.wind.speed);
-    $(`${day.selector} .humidity`).text(result.main.humidity);
-    saveLocal(day.selector, result);
+    // $(`${day.selector} .temp`).text(result.main.temp);
+    // $(`${day.selector} .wind`).text(result.wind.speed);
+    // $(`${day.selector} .humidity`).text(result.main.humidity);
+    $(`${day.selector} .temp`).text(result.forecast[day.selector].temp);
+    $(`${day.selector} .wind`).text(result.forecast[day.selector].wind);
+    $(`${day.selector} .humidity`).text(result.forecast[day.selector].humidity);
+
+    saveLocal(result);
 }
 
 $("#search-button").on("click", function(event){
     event.preventDefault();
-    const searchInput = $("#search-input").val().trim().split(",");
-    console.log(searchInput[0], searchInput[1]||'')
-    callAPI(searchInput[0], searchInput[1]||'')
-    appendSearch(searchInput);
+    const searchInput = $("#search-input").val().trim().split(',');
+    const city = searchInput[0];
+    const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
+    console.log(city, country)
+    appendSearch(`${city}, ${country}`);
+    callAPI(city, country)
 })
 
 function appendForecast(selector){
@@ -113,16 +138,48 @@ function appendForecast(selector){
 }
 
 function appendSearch(searchItem){
-    const searchedElement = $(`<li>${searchItem}</li>`)
-    $("#history").append(searchedElement);
+    const searchedElement = $(`<li>`)
+    searchedElement.addClass("search-item")
+    searchedElement.text(searchItem)
+    $("#history").append(searchedElement); 
+    addRecentEvent();
 }
+
+function addCountryToRecent(result){
+    let recentSearch = document.querySelectorAll(".search-item")
+    recentSearch = recentSearch[recentSearch.length-1]
+    //let city = result.name;
+    let city = result.cityName;
+    let countryCode = recentSearch.textContent.trim().split(',')[1];
+    //countryCode = !countryCode ? result.sys.country.toUpperCase() : country.toUpperCase();
+    countryCode = !countryCode ? result.countryName.toUpperCase() : countryCode.toUpperCase();
+    console.log(recentSearch)
+    recentSearch.textContent=`${city}, ${countryCode}`
+}   
+
+function addRecentEvent(){
+    $(".search-item").on("click", function(event){
+        console.log("clicked", event.target.textContent)
+        loadLocal(event.target.textContent.replace(" ", ""))
+        console.log(event.target.textContent.replace(" ", ""))
+    })
+}
+
+
+const days = ["#today", "#day-1", "#day-2", "#day-3", "#day-4", "#day-5"];
 
 function loadLocal(city){
-    const result = JSON.parse(localStorage.getItem("su-weather-app"));
+    const result = JSON.parse(localStorage.getItem(city));
+    console.log(city, result)
+    for (let i = 0; i < days.length; i++) {
+        //console.log(days[i])
+        updateWeatherInfo(day(i), result)
+    }
 }
 
-function saveLocal(date, cityObj){
-    const city = cityObj.name;
+//function saveLocal(date, cityObj){
+function saveLocal(cityObj){
+    /* const city = cityObj.name;
     const country = cityObj.sys.country;
 
     const cityInfo = {
@@ -136,9 +193,11 @@ function saveLocal(date, cityObj){
         temp : cityObj.main.temp,
         wind : cityObj.wind.speed,
         humidity : cityObj.main.humidity,
-    }
-    
+    } */
+    const city = cityObj.cityName;
+    const country = cityObj.countryName;
     const recentSearches = JSON.parse(localStorage.getItem(`${city},${country}`)) || {};
-    recentSearches[`${city},${country}`]=cityInfo;
-    localStorage.setItem(`${city},${country}`, JSON.stringify(cityInfo));   
+    recentSearches[`${city},${country}`]=cityObj//cityInfo;
+    //localStorage.setItem(`${city},${country}`, JSON.stringify(cityInfo));
+    localStorage.setItem(`${city},${country}`, JSON.stringify(cityObj));
 }
