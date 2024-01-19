@@ -1,45 +1,37 @@
 function callAPI(city, countryCode){
     const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
 
-    // https://api.openweathermap.org/data/2.5/weather?q=London,&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric
-    // https://api.openweathermap.org/data/2.5/forecast?q=London,&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric
+    // `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`
+    // `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric`
     // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
     
     callFetch(0);
     function callFetch(nextDay) {
-        const time = day(nextDay).timestamp;
-        const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&APPID=${apiKey}&units=metric&dt=${time}`;
+        //const time = day(nextDay).timestamp;
+        const apiURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric`;
         
         fetch(apiURL)
             .then(response => response.json())
             .then(result => {
-                const city = result.name;
-                const country = result.sys.country;
+                const city = result.city.name;
+                const country = result.city.country;
                 const cityInfo = {
                     cityName: city,
                     countryName: country,
                     forecast,
                 };
-                
-                cityInfo.forecast[day(nextDay).selector] = {
-                    timestamp : result.dt,
-                    weatherIcon: result.weather[0].icon,
-                    temp : result.main.temp,
-                    wind : result.wind.speed,
-                    humidity : result.main.humidity,
-                };
-                console.log(cityInfo.forecast[day(nextDay).selector].weatherIcon);
-                updateWeatherInfo(day(nextDay), cityInfo);
-                if(nextDay===5){
-                    addCountryToRecent(cityInfo);
-                }
-                return nextDay+1
+                //console.log(cityInfo.forecast[day(nextDay).selector].weatherIcon);
+                updateWeatherInfo(day(nextDay), cityInfo, result, nextDay);
+                // if(nextDay===5){
+                //     addCountryToRecent(cityInfo);
+                // }
+                // return nextDay+1
             })
-            .then(nextDay => {
-                if(nextDay <= 5) {
-                    callFetch(nextDay);
-                }
-            })
+            // .then(nextDay => {
+            //     if(nextDay <= 5) {
+            //         //callFetch(nextDay);
+            //     }
+            // })
             .catch(error => console.error(error));
     }
 }
@@ -90,26 +82,36 @@ function day(index=0){
     "cod":200
 } */
 
-function updateWeatherInfo(day, result){
+function updateWeatherInfo(day, cityInfo, result, index){
+    cityInfo.forecast[day(nextDay).selector] = {
+        timestamp : result.list[nextDay].dt,
+        weatherIcon: result.list[nextDay].weather[nextDay].icon,
+        temp : result.list[nextDay].main.temp,
+        wind : result.list[nextDay].wind.speed,
+        humidity : result.list[nextDay].main.humidity,
+    };
+    
     let convertTime = new Date (day.timestamp);
     let d = convertTime.getDate()<10 ? `0${convertTime.getDate()}`:`${convertTime.getDate()}`;
     let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
     let y = convertTime.getFullYear();
     
-    console.log(day.selector, result);
+    console.log(day.selector, cityInfo);
     //$("#forecast").html("")
     //appendForecast(day.selector);
-    const {weatherIcon} = result.forecast[day.selector];
+    const {weatherIcon} = cityInfo.forecast[day.selector];
 
-    $(".city-name").text(result.cityName);
+    $(".city-name").text(cityInfo.cityName);
     $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
     $(`${day.selector} .weather-icon`).attr("src", `http://openweathermap.org/img/w/${weatherIcon}.png`);
     $(`${day.selector} .weather-icon`).attr("alt", `Weather icon`);
-    $(`${day.selector} .temp`).text(result.forecast[day.selector].temp);
-    $(`${day.selector} .wind`).text(result.forecast[day.selector].wind);
-    $(`${day.selector} .humidity`).text(result.forecast[day.selector].humidity);
+    $(`${day.selector} .temp`).text(cityInfo.forecast[day.selector].temp);
+    $(`${day.selector} .wind`).text(cityInfo.forecast[day.selector].wind);
+    $(`${day.selector} .humidity`).text(cityInfo.forecast[day.selector].humidity);
 
-    saveLocal(result);
+    saveLocal(cityInfo);
+    index++;
+    if(index<6)updateWeatherInfo(day(index), cityInfo, result, index)
 }
 
 $("#search-button").on("click", function(event){
