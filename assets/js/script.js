@@ -11,8 +11,6 @@ function callAPI(city, countryCode){
         fetch(apiURL)
             .then(response => response.json())
             .then(result => {
-                //console.log(time, nextDay);
-                //console.log(apiURL)
                 const city = result.name;
                 const country = result.sys.country;
                 const cityInfo = {
@@ -21,14 +19,15 @@ function callAPI(city, countryCode){
                     forecast,
                 }
                 
-                cityInfo.forecast[days[nextDay]] = {
+                cityInfo.forecast[day(nextDay).selector] = {
                     timestamp : result.dt,
-                    //weatherIcon: result.weather[0].icon,
+                    weatherIcon: result.weather[0].icon,
                     temp : result.main.temp,
                     wind : result.wind.speed,
                     humidity : result.main.humidity,
                 }
-                updateWeatherInfo(day(nextDay), cityInfo); // today
+                console.log(cityInfo.forecast[day(nextDay).selector].weatherIcon)
+                updateWeatherInfo(day(nextDay), cityInfo);
                 if(nextDay===5){
                     addCountryToRecent(cityInfo);
                 }
@@ -90,23 +89,19 @@ function day(index=0){
 } */
 
 function updateWeatherInfo(day, result){
-    //console.log(day.timestamp);
     let convertTime = new Date (day.timestamp);
-    //console.log(convertTime);
     let d = convertTime.getDate()<10 ? `0${convertTime.getDate()}`:`${convertTime.getDate()}`;
     let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
     let y = convertTime.getFullYear()
     
-    //console.log(day.timestamp, d, m, y);
     console.log(day.selector, result);
-    //console.log(result.forecast.weatherIcon)
     //$("#forecast").html("")
     //appendForecast(day.selector);
-    //const weatherIcon = result.weather[0];
+    const {weatherIcon} = result.forecast[day.selector];
 
     $(".city-name").text(result.cityName);
     $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
-    //$(`${day.selector} .weather-icon`).attr("src", `http://openweathermap.org/img/w/${weatherIcon}.png`);
+    $(`${day.selector} .weather-icon`).attr("src", `http://openweathermap.org/img/w/${weatherIcon}.png`);
     $(`${day.selector} .weather-icon`).attr("alt", `Weather icon`);
     $(`${day.selector} .temp`).text(result.forecast[day.selector].temp);
     $(`${day.selector} .wind`).text(result.forecast[day.selector].wind);
@@ -150,7 +145,7 @@ function addCountryToRecent(result){
     recentSearch = recentSearch[recentSearch.length-1]
     //let city = result.name;
     let city = result.cityName;
-    let countryCode = recentSearch.textContent.trim().split(',')[1];
+    let countryCode = recentSearch.textContent.replace(/\s+/g,"").split(',')[1];
     //countryCode = !countryCode ? result.sys.country.toUpperCase() : country.toUpperCase();
     countryCode = !countryCode ? result.countryName.toUpperCase() : countryCode.toUpperCase();
     //console.log(recentSearch)
