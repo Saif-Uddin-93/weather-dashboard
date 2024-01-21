@@ -21,12 +21,17 @@ function callAPI(city, countryCode){
                     forecast,
                 };
                 //console.log(cityInfo.forecast[day(nextDay).selector].weatherIcon);
-                updateWeatherInfo(day(nextDay), cityInfo, result, nextDay);
+                cityObject(day(nextDay), cityInfo, result, nextDay);
                 // if(nextDay===5){
-                //     addCountryToRecent(cityInfo);
-                // }
-                // return nextDay+1
-            })
+                    //     addCountryToRecent(cityInfo);
+                    // }
+                    // return nextDay+1
+                })
+            // .then(cityObj =>{
+                
+            //     updateWeatherInfo(day(nextDay), cityObj, nextDay);
+            //     saveLocal(cityObj);
+            // })
             // .then(nextDay => {
             //     if(nextDay <= 5) {
             //         //callFetch(nextDay);
@@ -85,13 +90,14 @@ function day(index=0){
 function noonIndex(result, index){
     const oneDay = 86400;
     const timestamp = result.list[index].dt;
-    console.log(`remainder: ${timestamp % oneDay}`);
+    //console.log(`remainder: ${timestamp % oneDay}`);
+    // look for index at 12pm
     if(timestamp % oneDay !== 43200){return noonIndex(result, index+1)}
-    console.log(index)
+    console.log("next day index:", index)
     return index;
 }
 
-function updateWeatherInfo(dayObj, cityInfo, result, dtIndex, index=0){
+function cityObject(dayObj, cityInfo, result, dtIndex, index=0){
     cityInfo.forecast[dayObj.selector] = {
         timestamp : result.list[dtIndex].dt,
         weatherIcon: result.list[dtIndex].weather[0].icon,
@@ -99,6 +105,19 @@ function updateWeatherInfo(dayObj, cityInfo, result, dtIndex, index=0){
         wind : result.list[dtIndex].wind.speed,
         humidity : result.list[dtIndex].main.humidity,
     };
+    if(index<5){
+        let nextDayIndex = noonIndex(result, dtIndex+1);
+        cityObject(day(index+1), cityInfo, result, nextDayIndex, index+1);
+    }
+    else {
+        //while(!cityInfo) console.log("creating object")
+        //return cityInfo;
+        saveLocal(cityInfo)
+        updateWeatherInfo(day(0), cityInfo, 0);
+    }
+}
+
+function updateWeatherInfo(dayObj, cityInfo, index=0){
     
     let convertTime = new Date (dayObj.timestamp);
     let d = convertTime.getDate()<10 ? `0${convertTime.getDate()}`:`${convertTime.getDate()}`;
@@ -118,9 +137,12 @@ function updateWeatherInfo(dayObj, cityInfo, result, dtIndex, index=0){
     $(`${dayObj.selector} .wind`).text(cityInfo.forecast[dayObj.selector].wind);
     $(`${dayObj.selector} .humidity`).text(cityInfo.forecast[dayObj.selector].humidity);
 
-    saveLocal(cityInfo);
-    let nextDayIndex = noonIndex(result, dtIndex);
-    if(index<6)updateWeatherInfo(day(index+1), cityInfo, result, nextDayIndex+1, index+1)
+    if(!recent)addCountryToRecent(cityInfo);
+    //saveLocal(cityInfo);
+    if(index<5){
+        //let nextDayIndex = noonIndex(result, dtIndex+1);
+        updateWeatherInfo(day(index+1), cityInfo, index+1)
+    }
 }
 
 $("#search-button").on("click", function(event){
@@ -129,7 +151,8 @@ $("#search-button").on("click", function(event){
     const city = searchInput[0];
     const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
     console.log(city, country);
-    appendSearch(`${city}, ${country}`);
+    //appendSearch(`${city}, ${country}`);
+    appendSearch(`loading...`);
     callAPI(city, country);
 })
 
@@ -156,7 +179,12 @@ function appendSearch(searchItem){
 function addCountryToRecent(result){
     let recentSearch = document.querySelectorAll(".search-item");
     recentSearch = recentSearch[recentSearch.length-1];
-    let {cityName} = result;
+    //let cityName = recentSearch.textContent.split(",")[0];
+    let {cityName} = result
+    // cityName = cityName.split("")
+    // const capitalized = cityName[0].toUpperCase();
+    // cityName[0] = capitalized;
+    // cityName = cityName.join("");
     let {countryName} = result;
     recentSearch.textContent=`${cityName}, ${countryName}`;
 }   
@@ -164,20 +192,20 @@ function addCountryToRecent(result){
 function addRecentEvent(){
     $(".search-item").on("click", function(event){
         console.log("clicked", event.target.textContent);
-        const item = event.target.textContent.replace(/\s+/g, "");
-        console.log(item);
-        loadLocal(item);
+        const recentCity = event.target.textContent.replace(/\s+/g, "");
+        console.log(recentCity);
+        loadLocal(recentCity);
     })
 }
 
 const days = ["#today", "#day-1", "#day-2", "#day-3", "#day-4", "#day-5"];
 
 function loadLocal(city){
-    const result = JSON.parse(localStorage.getItem(city));
-    console.log(city, result);
+    const cityInfo = JSON.parse(localStorage.getItem(city));
+    console.log(city, cityInfo);
     loop(0);
     function loop(index){
-        updateWeatherInfo(day(index), result);
+        updateWeatherInfo(day(index), cityInfo, 0);
         index++;
         if(index<days.length)loop(index);
     }
