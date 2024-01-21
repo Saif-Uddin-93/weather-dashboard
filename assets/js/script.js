@@ -82,36 +82,45 @@ function day(index=0){
     "cod":200
 } */
 
-function updateWeatherInfo(day, cityInfo, result, index){
-    cityInfo.forecast[day(nextDay).selector] = {
-        timestamp : result.list[nextDay].dt,
-        weatherIcon: result.list[nextDay].weather[nextDay].icon,
-        temp : result.list[nextDay].main.temp,
-        wind : result.list[nextDay].wind.speed,
-        humidity : result.list[nextDay].main.humidity,
+function noonIndex(result, index){
+    const oneDay = 86400;
+    const timestamp = result.list[index].dt;
+    console.log(`remainder: ${timestamp % oneDay}`);
+    if(timestamp % oneDay !== 43200){return noonIndex(result, index+1)}
+    console.log(index)
+    return index;
+}
+
+function updateWeatherInfo(dayObj, cityInfo, result, dtIndex, index=0){
+    cityInfo.forecast[dayObj.selector] = {
+        timestamp : result.list[dtIndex].dt,
+        weatherIcon: result.list[dtIndex].weather[0].icon,
+        temp : result.list[dtIndex].main.temp,
+        wind : result.list[dtIndex].wind.speed,
+        humidity : result.list[dtIndex].main.humidity,
     };
     
-    let convertTime = new Date (day.timestamp);
+    let convertTime = new Date (dayObj.timestamp);
     let d = convertTime.getDate()<10 ? `0${convertTime.getDate()}`:`${convertTime.getDate()}`;
     let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
     let y = convertTime.getFullYear();
     
-    console.log(day.selector, cityInfo);
+    console.log(dayObj.selector, cityInfo);
     //$("#forecast").html("")
     //appendForecast(day.selector);
-    const {weatherIcon} = cityInfo.forecast[day.selector];
+    const {weatherIcon} = cityInfo.forecast[dayObj.selector];
 
     $(".city-name").text(cityInfo.cityName);
-    $(`${day.selector} .date`).text(`${d}/${m}/${y}`);
-    $(`${day.selector} .weather-icon`).attr("src", `http://openweathermap.org/img/w/${weatherIcon}.png`);
-    $(`${day.selector} .weather-icon`).attr("alt", `Weather icon`);
-    $(`${day.selector} .temp`).text(cityInfo.forecast[day.selector].temp);
-    $(`${day.selector} .wind`).text(cityInfo.forecast[day.selector].wind);
-    $(`${day.selector} .humidity`).text(cityInfo.forecast[day.selector].humidity);
+    $(`${dayObj.selector} .date`).text(`${d}/${m}/${y}`);
+    $(`${dayObj.selector} .weather-icon`).attr("src", `http://openweathermap.org/img/w/${weatherIcon}.png`);
+    $(`${dayObj.selector} .weather-icon`).attr("alt", `Weather icon`);
+    $(`${dayObj.selector} .temp`).text(cityInfo.forecast[dayObj.selector].temp);
+    $(`${dayObj.selector} .wind`).text(cityInfo.forecast[dayObj.selector].wind);
+    $(`${dayObj.selector} .humidity`).text(cityInfo.forecast[dayObj.selector].humidity);
 
     saveLocal(cityInfo);
-    index++;
-    if(index<6)updateWeatherInfo(day(index), cityInfo, result, index)
+    let nextDayIndex = noonIndex(result, dtIndex);
+    if(index<6)updateWeatherInfo(day(index+1), cityInfo, result, nextDayIndex+1, index+1)
 }
 
 $("#search-button").on("click", function(event){
