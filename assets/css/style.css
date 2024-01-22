@@ -50,18 +50,38 @@
 }
 
 @media (width < 431px){
+    #today{
+        max-width: 70vw;
+        position: relative;
+        left: 12.5%;
+        /* margin-right: 10vw;
+        margin-left: 10vw; */
+    }
     #forecast{
         display: flex;
+        padding-bottom: 2rem;
         justify-content: center;
+        & .forecast{
+            display: flex;
+            justify-content: center;
+            flex: 80%;
+            max-width: 70vw;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-right: 0;
+            flex-direction: column;
+            & .weather-icon{
+                width: 4rem;
+                position: relative;
+                left: 36.5%;
+            }
+        }
     }
-    .forecast{
-        display: flex;
-        justify-content: center;
-        flex: 80%;
-        max-width: 70vw;
-        text-align: center;
-        padding: 1rem;
-        margin-top: 1rem;
-        flex-direction: column;
+    .search-item{
+        position: relative;
+        min-width: 70%;
+        width: 80%;
+        left: 10%
     }
 }
