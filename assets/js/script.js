@@ -11,34 +11,26 @@ function callAPI(city, countryCode){
         const apiURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric`;
         
         fetch(apiURL)
-            .then(response => response.json())
-            .then(result => {
-                const city = result.city.name;
-                const country = result.city.country;
-                const cityInfo = {
-                    cityName: city,
-                    countryName: country,
-                    forecast,
-                };
-                //console.log(cityInfo.forecast[day(nextDay).selector].weatherIcon);
-                cityObject(day(nextDay), cityInfo, result, nextDay);
-                // if(nextDay===5){
-                    //     addCountryToRecent(cityInfo);
-                    // }
-                    // return nextDay+1
-                })
-            // .then(() => addCountryToRecent(cityInfo))
-                
-            //     updateWeatherInfo(day(nextDay), cityObj, nextDay);
-            //     saveLocal(cityObj);
-            // })
-            // .then(nextDay => {
-            //     if(nextDay <= 5) {
-            //         //callFetch(nextDay);
-            //     }
-            // })
-            .catch(error => console.error(error));
+        .then(response => response.json())
+        .then(result => {
+            const city = result.city.name;
+            const country = result.city.country;
+            const cityInfo = {
+                cityName: city,
+                countryName: country,
+                forecast,
+            };
+            cityObject(day(nextDay), cityInfo, result, nextDay);
+        })
+        .catch(error => {
+            console.error(error);
+            $("#errorModal").modal('show')
+        });
     }
+}
+
+function errorMsg(msg){
+    $(".error-msg").text(msg);
 }
 
 function day(index=0){
@@ -90,7 +82,7 @@ function day(index=0){
 function noonIndex(result, index){
     const oneDay = 86400;
     const timestamp = result.list[index].dt;
-    //console.log(`remainder: ${timestamp % oneDay}`);
+    // console.log(`remainder: ${timestamp % oneDay}`);
     // look for index at 12pm
     if(timestamp % oneDay !== 43200){return noonIndex(result, index+1)}
     console.log("next day index:", index)
@@ -110,8 +102,6 @@ function cityObject(dayObj, cityInfo, result, dtIndex, index=0){
         cityObject(day(index+1), cityInfo, result, nextDayIndex, index+1);
     }
     else {
-        //while(!cityInfo) console.log("creating object")
-        //return cityInfo;
         saveLocal(cityInfo)
         updateWeatherInfo(day(0), cityInfo, 0);
     }
@@ -137,11 +127,7 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     $(`${dayObj.selector} .wind`).text(cityInfo.forecast[dayObj.selector].wind);
     $(`${dayObj.selector} .humidity`).text(cityInfo.forecast[dayObj.selector].humidity);
 
-    //if(!recent)
-    //addCountryToRecent(cityInfo);
-    //saveLocal(cityInfo);
     if(index<5){
-        //let nextDayIndex = noonIndex(result, dtIndex+1);
         updateWeatherInfo(day(index+1), cityInfo, index+1)
     }
 }
@@ -152,8 +138,10 @@ $("#search-button").on("click", function(event){
     const city = searchInput[0];
     const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
     console.log(city, country);
-    //appendSearch(`${city}, ${country}`);
     appendSearch(`loading...`);
+    if($("#search-input").val()===''){
+        errorMsg('Invalid search input!')
+    }
     callAPI(city, country);
 })
 
@@ -220,3 +208,18 @@ function saveLocal(cityObj){
     localStorage.setItem(`${cityName},${countryName}`, JSON.stringify(cityObj));
     addCountryToRecent(cityObj);
 }
+
+function loadSavedToRecent(i){
+    const cityInfo = Object.entries(localStorage);
+    console.log(cityInfo);
+    if(cityInfo){
+        const savedLength = cityInfo.length;
+        console.log(savedLength);
+        if(i===savedLength) return;
+        else if(i<savedLength) {
+            appendSearch(cityInfo[i][0]);
+            loadSavedToRecent(i+1);
+        }
+    }
+}
+loadSavedToRecent(0);

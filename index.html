@@ -42,7 +42,6 @@
           <li>search</li> -->
         </ul>
       </aside>
-
       <div class="col-lg-9 pb-3">
         <section id="today" class="mt-3" role="region" aria-live="polite">
           <h2><span class="city-name">City</span> (<span class="date"></span>)<img class="weather-icon"></img></h2>
@@ -88,6 +87,29 @@
             <p>Humidity: <span class="humidity"></span>%</p>
           </div>
         </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+  </button> -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Error!!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span class="error-msg"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="close-error" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
