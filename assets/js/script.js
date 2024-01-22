@@ -27,7 +27,7 @@ function callAPI(city, countryCode){
                     // }
                     // return nextDay+1
                 })
-            // .then(cityObj =>{
+            // .then(() => addCountryToRecent(cityInfo))
                 
             //     updateWeatherInfo(day(nextDay), cityObj, nextDay);
             //     saveLocal(cityObj);
@@ -137,7 +137,8 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     $(`${dayObj.selector} .wind`).text(cityInfo.forecast[dayObj.selector].wind);
     $(`${dayObj.selector} .humidity`).text(cityInfo.forecast[dayObj.selector].humidity);
 
-    if(!recent)addCountryToRecent(cityInfo);
+    //if(!recent)
+    //addCountryToRecent(cityInfo);
     //saveLocal(cityInfo);
     if(index<5){
         //let nextDayIndex = noonIndex(result, dtIndex+1);
@@ -217,4 +218,5 @@ function saveLocal(cityObj){
     const recentSearches = JSON.parse(localStorage.getItem(`${cityName},${countryName}`)) || {};
     recentSearches[`${cityName},${countryName}`] = cityObj;
     localStorage.setItem(`${cityName},${countryName}`, JSON.stringify(cityObj));
+    addCountryToRecent(cityObj);
 }
