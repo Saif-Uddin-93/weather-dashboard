@@ -48,3 +48,20 @@
         cursor: pointer;
     }
 }
+
+@media (width < 431px){
+    #forecast{
+        display: flex;
+        justify-content: center;
+    }
+    .forecast{
+        display: flex;
+        justify-content: center;
+        flex: 80%;
+        max-width: 70vw;
+        text-align: center;
+        padding: 1rem;
+        margin-top: 1rem;
+        flex-direction: column;
+    }
+}
