@@ -1,3 +1,9 @@
+main();
+function main(){
+    loadSavedToRecent(0);
+}
+
+
 function callAPI(city, countryCode){
     const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
 
@@ -8,7 +14,7 @@ function callAPI(city, countryCode){
     callFetch(0);
     function callFetch(nextDay) {
         //const time = day(nextDay).timestamp;
-        const apiURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&APPID=f7755e3d7158d958bc9cd2b4fee96a47&units=metric`;
+        const apiURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&APPID=${apiKey}&units=metric`;
         
         fetch(apiURL)
         .then(response => response.json())
@@ -130,6 +136,7 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     if(index<5){
         updateWeatherInfo(day(index+1), cityInfo, index+1)
     }
+    else $('#forecast').css('opacity','1')
 }
 
 $("#search-button").on("click", function(event){
@@ -239,4 +246,3 @@ function loadSavedToRecent(i){
         }
     }
 }
-loadSavedToRecent(0);

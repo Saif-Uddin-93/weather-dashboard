@@ -4,6 +4,8 @@
 }
 
 #forecast{
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
     & .forecast{
         margin-right: 1rem;
         background-color: rgb(46, 65, 82);
@@ -52,9 +54,8 @@
     & h6{
         text-align: center;
     }
-    & .btn-close{
-        /* grid-column-start: 5; */
-    }
+    /* & .btn-close{
+    } */
 }
 
 @media (width < 431px){
