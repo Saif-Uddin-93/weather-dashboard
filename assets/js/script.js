@@ -30,6 +30,7 @@ function callAPI(city, countryCode){
         })
         .catch(error => {
             console.error(error);
+            errorMsg('Invalid search input!')
             $("#errorModal").modal('show')
             let recentSearch = document.querySelectorAll(".search-item");
             recentSearch = recentSearch[recentSearch.length-1];
@@ -112,9 +113,9 @@ $("#search-button").on("click", function(event){
     const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
     // console.log(city, country);
     appendSearch(`loading...`);
-    if($("#search-input").val()===''){
-        errorMsg('Invalid search input!')
-    }
+    // if($("#search-input").val()===''){
+    //     errorMsg('Invalid search input!')
+    // }
     callAPI(city, country);
 })
 
