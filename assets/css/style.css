@@ -39,7 +39,6 @@
 .search-item{
     display: flex;
     justify-content: end;
-    /* grid-template-columns: 20% 20% 20% 20% 20%; */
     border: black solid 1px;
     border-radius: 5px;
     min-width: 98%;

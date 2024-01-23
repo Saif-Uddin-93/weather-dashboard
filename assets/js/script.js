@@ -35,7 +35,7 @@ function callAPI(city, countryCode){
             let recentSearch = document.querySelectorAll(".search-item");
             recentSearch = recentSearch[recentSearch.length-1];
             recentSearch.remove();
-        });
+        })
     }
 }
 
@@ -173,7 +173,7 @@ function addRecentEvent(){
     $(".search-item .btn-close").on("click", function(event){
         event.stopPropagation();
         const parent = this.parentElement;
-        console.log(parent.textContent.replace(/\s+/g, ""))
+        console.log(parent.textContent.replace(/\s+/g, ""), "removed")
         localStorage.removeItem(parent.textContent.replace(/\s+/g, ""));
         parent.remove();
     }, )
