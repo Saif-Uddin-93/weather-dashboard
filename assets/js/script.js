@@ -51,43 +51,6 @@ function day(index=0){
     return {selector, timestamp}
 }
 
-/* const exampleAPIResult = 
-{
-    "coord":{
-        "lon":-0.1257,
-        "lat":51.5085},
-    "weather":[{
-        "id":803,
-        "main":"Clouds",
-        "description":"broken clouds",
-        "icon":"04n"}],
-    "base":"stations",
-    "main":{
-        "temp":4.07,
-        "feels_like":1.32,
-        "temp_min":2.9,
-        "temp_max":4.98,
-        "pressure":1009,
-        "humidity":83},
-    "visibility":10000,
-    "wind":{
-        "speed":3.09,
-        "deg":360},
-    "clouds":{
-        "all":75},
-    "dt":1705266216,
-    "sys":{
-        "type":2,
-        "id":2075535,
-        "country":"GB",
-        "sunrise":1705219240,
-        "sunset":1705249051},
-    "timezone":0,
-    "id":2643743,
-    "name":"London",
-    "cod":200
-} */
-
 function noonIndex(result, index){
     const oneDay = 86400;
     const timestamp = result.list[index].dt;
@@ -206,12 +169,13 @@ function addRecentEvent(){
         console.log(recentCity);
         loadLocal(recentCity);
     })
-    $(".search-item .btn-close").on("click", function(){
+    $(".search-item .btn-close").on("click", function(event){
+        event.stopPropagation();
         const parent = this.parentElement;
         console.log(parent.textContent.replace(/\s+/g, ""))
         localStorage.removeItem(parent.textContent.replace(/\s+/g, ""));
         parent.remove();
-    })
+    }, )
 }
 
 const days = ["#today", "#day-1", "#day-2", "#day-3", "#day-4", "#day-5"];
