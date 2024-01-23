@@ -31,6 +31,9 @@ function callAPI(city, countryCode){
         .catch(error => {
             console.error(error);
             $("#errorModal").modal('show')
+            let recentSearch = document.querySelectorAll(".search-item");
+            recentSearch = recentSearch[recentSearch.length-1];
+            recentSearch.remove();
         });
     }
 }
@@ -241,7 +244,8 @@ function loadSavedToRecent(i){
         // console.log(savedLength);
         if(i===savedLength) return;
         else if(i<savedLength) {
-            appendSearch(cityInfo[i][0]);
+            const cityName = cityInfo[i][0].split(',');
+            appendSearch(`${cityName[0]}, ${cityName[1]}`);
             loadSavedToRecent(i+1);
         }
     }
