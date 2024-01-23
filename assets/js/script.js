@@ -85,7 +85,7 @@ function noonIndex(result, index){
     // console.log(`remainder: ${timestamp % oneDay}`);
     // look for index at 12pm
     if(timestamp % oneDay !== 43200){return noonIndex(result, index+1)}
-    console.log("next day index:", index)
+    // console.log("next day index:", index)
     return index;
 }
 
@@ -114,7 +114,7 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     let m = (convertTime.getMonth()+1)<10 ? `0${convertTime.getMonth()+1}`:`${convertTime.getMonth()+1}`;
     let y = convertTime.getFullYear();
     
-    console.log(dayObj.selector, cityInfo);
+    // console.log(dayObj.selector, cityInfo);
     //$("#forecast").html("")
     //appendForecast(day.selector);
     const {weatherIcon} = cityInfo.forecast[dayObj.selector];
@@ -137,7 +137,7 @@ $("#search-button").on("click", function(event){
     const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
     const city = searchInput[0];
     const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
-    console.log(city, country);
+    // console.log(city, country);
     appendSearch(`loading...`);
     if($("#search-input").val()===''){
         errorMsg('Invalid search input!')
@@ -160,14 +160,24 @@ function appendForecast(selector){
 function appendSearch(searchItem){
     const searchedElement = $(`<li>`);
     searchedElement.addClass("search-item");
-    searchedElement.text(searchItem);
+    const title = $("<h6>");
+    title.text(searchItem)
+    // searchedElement.text(searchItem);
+    const closeIcon = $('<button>');
+    closeIcon.addClass('btn-close');
+    closeIcon.attr('type', 'button')
+    closeIcon.attr('aria-label', 'Close');
+    searchedElement.append(title);
+    searchedElement.append(closeIcon);
     $("#history").append(searchedElement); 
     addRecentEvent();
 }
 
 function addCountryToRecent(result){
-    let recentSearch = document.querySelectorAll(".search-item");
-    recentSearch = recentSearch[recentSearch.length-1];
+    let recentSearchText = document.querySelectorAll(".search-item h6");
+    //let recentSearch = document.querySelectorAll(".search-item");
+    recentSearchText = recentSearchText[recentSearchText.length-1];
+    //recentSearch = recentSearch[recentSearch.length-1];
     //let cityName = recentSearch.textContent.split(",")[0];
     let {cityName} = result
     // cityName = cityName.split("")
@@ -175,15 +185,22 @@ function addCountryToRecent(result){
     // cityName[0] = capitalized;
     // cityName = cityName.join("");
     let {countryName} = result;
-    recentSearch.textContent=`${cityName}, ${countryName}`;
+    recentSearchText.textContent=`${cityName}, ${countryName}`;
+    //recentSearch.classList.add(`${cityName}-${countryName}`)
 }   
 
 function addRecentEvent(){
     $(".search-item").on("click", function(event){
-        console.log("clicked", event.target.textContent);
+        //console.log("clicked", event.target.textContent);
         const recentCity = event.target.textContent.replace(/\s+/g, "");
         console.log(recentCity);
         loadLocal(recentCity);
+    })
+    $(".search-item .btn-close").on("click", function(){
+        const parent = this.parentElement;
+        console.log(parent.textContent.replace(/\s+/g, ""))
+        localStorage.removeItem(parent.textContent.replace(/\s+/g, ""));
+        parent.remove();
     })
 }
 
@@ -211,10 +228,10 @@ function saveLocal(cityObj){
 
 function loadSavedToRecent(i){
     const cityInfo = Object.entries(localStorage);
-    console.log(cityInfo);
+    // console.log(cityInfo);
     if(cityInfo){
         const savedLength = cityInfo.length;
-        console.log(savedLength);
+        // console.log(savedLength);
         if(i===savedLength) return;
         else if(i<savedLength) {
             appendSearch(cityInfo[i][0]);
