@@ -4,6 +4,7 @@
 }
 
 #forecast{
+    display: none;
     opacity: 0;
     transition: opacity 1s ease-in-out;
     & .forecast{
@@ -67,7 +68,7 @@
         margin-left: 10vw; */
     }
     #forecast{
-        display: flex;
+        /* display: flex; */
         padding-bottom: 2rem;
         justify-content: center;
         & .forecast{

@@ -1,6 +1,7 @@
 main();
 function main(){
     loadSavedToRecent(0);
+    addRecentEvent();
     searchEvent();
 }
 
@@ -103,7 +104,10 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     if(index<5){
         updateWeatherInfo(day(index+1), cityInfo, index+1)
     }
-    else $('#forecast').css('opacity','1')
+    else {
+        $('#forecast').css('display','flex')
+        $('#forecast').css('opacity','1')
+    }
 }
 
 /* $("#search-button").on("click", function(event){
@@ -123,21 +127,31 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
 
 }) */
 
+/* $("#search-button").on("click", (event)=>{
+    event.preventDefault();
+}) */
+
+let bool = true;
+
 function searchEvent(){
     $("#search-button").click(function(event){
         event.preventDefault();
-        const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
-        const city = searchInput[0];
-        const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
-        // console.log(city, country);
-        appendSearch(`loading...`);
-        setTimeout(()=>{
-            callAPI(city, country);
-            searchEvent();
-            console.log("search event handler re-added")
-        }, 1000);
-        $("#search-button").off("click")
-        console.log("run during async timeout")
+        if(bool){
+            bool = false;
+            const searchInput = $("#search-input").val().split(',');
+            const city = searchInput[0].trim();
+            const country = !searchInput[1] ? '' : searchInput[1].toUpperCase().trim();
+            // console.log(city, country);
+            appendSearch(`loading...`);
+            setTimeout(()=>{
+                callAPI(city, country);
+                searchEvent();
+                console.log("search event handler re-added")
+                bool = true;
+            }, 1000);
+            // $("#search-button").off("click");
+            console.log("run during async timeout")
+        }
     })
 }
 
@@ -175,7 +189,7 @@ function appendSearch(searchItem){
     searchedElement.append(title);
     searchedElement.append(closeIcon);
     $("#history").append(searchedElement); 
-    addRecentEvent();
+    // addRecentEvent();
 }
 
 function addCountryToRecent(result){
@@ -195,19 +209,22 @@ function addCountryToRecent(result){
 }   
 
 function addRecentEvent(){
-    $(".search-item").on("click", function(event){
+    $(document).on("click", ".search-item", function(event){
         //console.log("clicked", event.target.textContent);
-        const recentCity = event.target.textContent.replace(/\s+/g, "");
+        let recentCity = event.target.textContent.split(',')//replace(/\s+/g, "");]
+        recentCity = recentCity[0]+","+recentCity[1].trim();
         console.log(recentCity);
         loadLocal(recentCity);
     })
-    $(".search-item .btn-close").on("click", function(event){
+    $(document).on("click", ".search-item .btn-close", function(event){
         event.stopPropagation();
         const parent = this.parentElement;
-        console.log(parent.textContent.replace(/\s+/g, ""), "removed")
-        localStorage.removeItem(parent.textContent.replace(/\s+/g, ""));
+        let recentCity = parent.textContent.split(',')
+        recentCity = recentCity[0]+","+recentCity[1].trim();
+        console.log(recentCity, "removed")
+        localStorage.removeItem(recentCity);
         parent.remove();
-    }, )
+    })
 }
 
 const days = ["#today", "#day-1", "#day-2", "#day-3", "#day-4", "#day-5"];
