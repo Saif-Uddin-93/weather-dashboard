@@ -1,8 +1,8 @@
 main();
 function main(){
     loadSavedToRecent(0);
+    searchEvent();
 }
-
 
 function callAPI(city, countryCode){
     const apiKey = "f7755e3d7158d958bc9cd2b4fee96a47";
@@ -106,7 +106,7 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     else $('#forecast').css('opacity','1')
 }
 
-$("#search-button").on("click", function(event){
+/* $("#search-button").on("click", function(event){
     event.preventDefault();
     const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
     const city = searchInput[0];
@@ -114,10 +114,41 @@ $("#search-button").on("click", function(event){
     // console.log(city, country);
     appendSearch(`loading...`);
     // if($("#search-input").val()===''){
+        
     //     errorMsg('Invalid search input!')
     // }
-    callAPI(city, country);
-})
+    setTimeout(()=>{
+        callAPI(city, country);
+    }, 1000);
+
+}) */
+
+function searchEvent(){
+    $("#search-button").click(function(event){
+        event.preventDefault();
+        const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
+        const city = searchInput[0];
+        const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
+        // console.log(city, country);
+        appendSearch(`loading...`);
+        setTimeout(()=>{
+            callAPI(city, country);
+            searchEvent();
+            console.log("search event handler re-added")
+        }, 1000);
+        $("#search-button").off("click")
+        console.log("run during async timeout")
+    })
+}
+
+/* function search(event){
+    event.preventDefault();
+    const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
+    const city = searchInput[0];
+    const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
+    // console.log(city, country);
+    appendSearch(`loading...`);
+} */
 
 function appendForecast(selector){
     selector = selector.replace("#", "");
