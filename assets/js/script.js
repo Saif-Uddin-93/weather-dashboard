@@ -18,7 +18,10 @@ function callAPI(city, countryCode){
         const apiURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&APPID=${apiKey}&units=metric`;
         
         fetch(apiURL)
-        .then(response => response.json())
+        .then(response => {
+            if(!response.ok) throw new Error("API call failed")
+            return response.json()
+        })
         .then(result => {
             const city = result.city.name;
             const country = result.city.country;
@@ -55,12 +58,13 @@ function day(index=0){
 
 function noonIndex(result, index){
     const oneDay = 86400;
+    console.log(index, result, result.list.length)
     const timestamp = result.list[index].dt;
-    // console.log(`remainder: ${timestamp % oneDay}`);
-    // look for index at 12pm
-    if(timestamp % oneDay !== 43200){return noonIndex(result, index+1)}
-    // console.log("next day index:", index)
-    return index;
+    console.log(timestamp, timestamp % oneDay, oneDay/2)
+    // look for index at 12pm. half of oneDay is 12PM
+    if(timestamp % oneDay !== oneDay/2)return noonIndex(result, index+1)
+    else if(index === result.list.length) throw new Error("index at 12PM not found");
+    else if(timestamp % oneDay === oneDay/2) return index
 }
 
 function cityObject(dayObj, cityInfo, result, dtIndex, index=0){
