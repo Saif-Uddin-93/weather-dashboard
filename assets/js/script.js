@@ -57,14 +57,21 @@ function day(index=0){
 }
 
 function noonIndex(result, index){
-    if(index === result.list.length) throw new Error("index at 12PM not found");
+    if(index === result.list.length) {
+        console.log("REACHED THE END OF THE LIST. THROW ERROR!")
+        return index-1;
+        throw new Error("index at 12PM not found");
+    }
     const oneDay = 86400;
     console.log(index, result, result.list.length)
     const timestamp = result.list[index].dt;
     console.log(timestamp, timestamp % oneDay, oneDay/2)
     // look for index at 12pm. half of oneDay is 12PM
+    if(timestamp % oneDay === oneDay/2) {
+        console.log("12PM index is at", index);
+        return index
+    }
     if(timestamp % oneDay !== oneDay/2) return noonIndex(result, index+1)
-    else if(timestamp % oneDay === oneDay/2) return index
 }
 
 function cityObject(dayObj, cityInfo, result, dtIndex, index=0){
