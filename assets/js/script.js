@@ -164,7 +164,7 @@ function searchEvent(){
     appendSearch(`loading...`);
 } */
 
-function appendForecast(selector){
+/* function appendForecast(selector){
     selector = selector.replace("#", "");
     const element = $("<div>");
     element.attr("id", `${selector}`);
@@ -174,7 +174,7 @@ function appendForecast(selector){
     <p>Wind: <span class="wind"></span>KPH</p>
     <p>Humidity: <span class="humidity"></span>%</p>`);
     $("#forecast").append(element);
-}
+} */
 
 function appendSearch(searchItem){
     const searchedElement = $(`<li>`);
@@ -199,10 +199,6 @@ function addCountryToRecent(result){
     //recentSearch = recentSearch[recentSearch.length-1];
     //let cityName = recentSearch.textContent.split(",")[0];
     let {cityName} = result
-    // cityName = cityName.split("")
-    // const capitalized = cityName[0].toUpperCase();
-    // cityName[0] = capitalized;
-    // cityName = cityName.join("");
     let {countryName} = result;
     recentSearchText.textContent=`${cityName}, ${countryName}`;
     //recentSearch.classList.add(`${cityName}-${countryName}`)
