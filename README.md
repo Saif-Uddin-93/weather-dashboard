@@ -2,19 +2,19 @@
 
 ## Description
 
-This project was created to create a weather forecast application. The aim was to able to search for the weather forecast for the current day and following 5 days. The project meets the following criteria:
+This project was created to create a weather forecast application. The aim was to be able to search for the weather forecast for the current day and the following 5 days. The project meets the following criteria:
 
-* The weather forecast for the current day and next 5 days are displayed when entering a city.
-* Any saved searches are loaded if it exists.
-* The country can be specified in the search by including a the country code after the city, seperated by a comma.
+* The weather forecast for the current day and the next 5 days are displayed when entering a city.
+* Any saved searches are loaded if they exist.
+* The country can be specified in the search by including the country code after the city, separated by a comma.
 * The searches will be added below the search bar with the country code to specify to the user which country the city is in.
-* The search item can be removed by clicking on the <b>X</b> on the end of the search item.
+* The search item can be removed by clicking on the <b>X</b> at the end of the search item.
 * All saved data is stored locally.
 
 The main things I've learned from this project are:
 
-* Gained understading with JS objects such as Date and how to convert Unix timestamps to readable dates.
-* Pratice with writing more readable code using functional programming concepts.
+* Gained an understanding of JS objects such as Date and how to convert Unix timestamps to readable dates.
+* Practice writing more readable code using functional programming concepts.
 
 [Link to deployed web page.](https://saif-uddin-93.github.io/weather-dashboard/)
 
@@ -29,9 +29,9 @@ The main things I've learned from this project are:
 ## User Story
 
 ```md
-AS AN frequent traveller
+AS A frequent traveller
 I WANT to check the weather at the destinations I plan to travel to
-SO THAT I can effectively plan and bring appropiate items/clothing suitable for the weather.
+SO THAT I can effectively plan and bring appropriate items/clothing suitable for the weather.
 ```
 
 ## Installation
@@ -40,18 +40,18 @@ For this project, the developer tool I'll be using is VS Code. A lightweight IDE
 
 ## Usage
 
-The weather app can be utilised by entering a city name or a city name and a country code by seprating them with a comma. For entering the correct state/country codes, please refer to the [ISO 3166](https://www.iso.org/obp/ui/#search) standarization.
+The weather app can be utilised by entering a city name or a city name and a country code by separating them with a comma. For entering the correct state/country codes, please refer to the [ISO 3166](https://www.iso.org/obp/ui/#search) standardisation.
 
-The forecasts in 5-day forecast section are for 12PM on their respective days.
+The forecasts in the 5-day forecast section are for 12 PM on their respective days.
 
 Screenshot of the final application:
 ![Screenshot of final application](./assets/images/screenshot.png)
 
-Searches are saved on the browsers local storage so the user can load the results again to get search results from the time when they made that search and can be deleted by clearing cache or clicking on the <b>X</b> which will also remove the saved result from the local storage.
+Searches are saved on the browsers local storage so the user can load the results again to get search results from the time when they made that search and can be deleted by clearing the cache or clicking on the <b>X</b> which will also remove the saved result from the local storage.
 
 ## Credits
 
-Assets in this projects belong to the edX organisers. All JavaScript in this project was written by myself.
+Assets in this project belong to the edX organisers. All JavaScript in this project was written by myself.
 
 ## License
 ### MIT License
