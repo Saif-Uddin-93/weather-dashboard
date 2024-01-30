@@ -224,9 +224,7 @@ function loadSavedToRecent(i){
     // console.log(cityInfo);
     if(cityInfo){
         const savedLength = cityInfo.length;
-        // console.log(savedLength);
-        if(i===savedLength) return;
-        else if(i<savedLength) {
+        if(i<savedLength) {
             const cityName = cityInfo[i][0].split(',');
             appendSearch(`${cityName[0]}, ${cityName[1]}`);
             loadSavedToRecent(i+1);
