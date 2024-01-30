@@ -57,7 +57,7 @@ function day(index=0){
 }
 
 function noonIndex(result, index, max){
-    while (index>max-1)index--;
+    if (index>max-1)index=max-1;
     const oneDay = 86400;
     const timestamp = result.list[index].dt;
     // look for index at 12pm. half of oneDay is 12PM
