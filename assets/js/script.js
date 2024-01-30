@@ -56,8 +56,10 @@ function day(index=0){
     return {selector, timestamp}
 }
 
-function noonIndex(result, index){
+function noonIndex(result, index, max){
+    while (index>max-1)index--;
     const oneDay = 86400;
+    //console.log(result);
     const timestamp = result.list[index].dt;
     // look for index at 12pm. half of oneDay is 12PM
     if(timestamp % oneDay !== oneDay/2) return noonIndex(result, index+1)
@@ -75,7 +77,7 @@ function cityObject(dayObj, cityInfo, result, dtIndex, index=0){
     // loop cityObject function for forecast data
     const max = result.list.length;
     if(index<5 && dtIndex<max){
-        let nextDayIndex = noonIndex(result, dtIndex+1);
+        let nextDayIndex = noonIndex(result, dtIndex+1, max);
         cityObject(day(index+1), cityInfo, result, nextDayIndex, index+1);
     }
     else {
@@ -113,27 +115,6 @@ function updateWeatherInfo(dayObj, cityInfo, index=0){
     }
 }
 
-/* $("#search-button").on("click", function(event){
-    event.preventDefault();
-    const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
-    const city = searchInput[0];
-    const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
-    // console.log(city, country);
-    appendSearch(`loading...`);
-    // if($("#search-input").val()===''){
-        
-    //     errorMsg('Invalid search input!')
-    // }
-    setTimeout(()=>{
-        callAPI(city, country);
-    }, 1000);
-
-}) */
-
-/* $("#search-button").on("click", (event)=>{
-    event.preventDefault();
-}) */
-
 let bool = true;
 
 function searchEvent(){
@@ -157,15 +138,6 @@ function searchEvent(){
         }
     })
 }
-
-/* function search(event){
-    event.preventDefault();
-    const searchInput = $("#search-input").val().replace(/\s+/g, "").split(',');
-    const city = searchInput[0];
-    const country = !searchInput[1] ? '' : searchInput[1].toUpperCase();
-    // console.log(city, country);
-    appendSearch(`loading...`);
-} */
 
 /* function appendForecast(selector){
     selector = selector.replace("#", "");
@@ -230,7 +202,7 @@ const days = ["#today", "#day-1", "#day-2", "#day-3", "#day-4", "#day-5"];
 
 function loadLocal(city){
     const cityInfo = JSON.parse(localStorage.getItem(city));
-    console.log(city, cityInfo);
+    // console.log(city, cityInfo);
     loop(0);
     function loop(index){
         updateWeatherInfo(day(index), cityInfo, 0);
